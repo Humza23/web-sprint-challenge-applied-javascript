@@ -1,4 +1,31 @@
+import axios from "axios";
+
 const Card = (article) => {
+    const card = document.createElement('div')
+    const headline = document.createElement('div')
+    const author = document.createElement('div')
+    const imgContainer = document.createElement('div')
+    const photoAuthor = document.createElement('img')
+    const nameAuthor = document.createElement('span')
+
+
+    card.classList.add('card')
+    headline.classList.add('headline')
+    author.classList.add('author')
+    imgContainer.classList.add('img-container')
+
+    headline.textContent = article.headline
+    photoAuthor.src = article.authorPhoto
+    nameAuthor.textContent = article.authorName
+
+    card.appendChild(headline)
+    card.appendChild(author)
+    author.appendChild(imgContainer)
+    imgContainer.appendChild(photoAuthor)
+    author.appendChild(nameAuthor)
+
+    return card
+}
   // TASK 5
   // ---------------------
   // Implement this function, which should return the markup you see below.
@@ -17,9 +44,30 @@ const Card = (article) => {
   //   </div>
   // </div>
   //
-}
 
 const cardAppender = (selector) => {
+  const cardContainer = document.querySelector(selector)
+axios
+  .get('https://lambda-times-api.herokuapp.com/articles')
+  .then((res) => {
+    console.log(res.data.articles);
+    const cardsInfo = res.data.articles
+    
+    for(const property in cardsInfo){
+      cardsInfo[property].forEach((article) => {
+
+        const cardsCreated = Card(article)
+        cardContainer.appendChild(cardsCreated)
+      })
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+  }
+  
+  
+
   // TASK 6
   // ---------------------
   // Implement this function that takes a css selector as its only argument.
@@ -28,6 +76,5 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
-}
 
 export { Card, cardAppender }
